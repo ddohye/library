@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="store">
+
+	<select id="allWithPage" parameterType="int" resultType="store">
+		<![CDATA[
+		SELECT * FROM
+		(SELECT ROWNUM AS R, ST.* FROM
+		(SELECT * FROM STORE) ST) S
+		WHERE S.R >= (#{a}-1)*10+1 AND S.R <= #{a}*10
+		]]>
+	</select>
+
+	<select id="allCount" resultType="int">
+		SELECT COUNT(*) FROM STORE
+	</select>
+	
+	<select id="selectStore" parameterType="String" resultType="store">
+		SELECT * FROM STORE
+		WHERE ST_NUM LIKE #{a}
+	</select>
+	
+	<select id="checkmember" parameterType="java.util.Map" resultType="mem">
+		SELECT l_id, m_id, m_pw, m_name, m_phone FROM l_member
+		WHERE m_id = #{map_id} and l_id = #{map_l_id}  and m_pw =  #{map_pw}
+	</select> 
+	
+	<select id="checkid" parameterType="String" resultType="String">
+		SELECT m_id FROM l_member
+		WHERE m_id = #{a} 
+	</select> 
+
+	<select id="librarylist" resultType="lib">
+		SELECT * FROM library
+	</select> 
+	
+	<insert id="insertmember" parameterType="mem">
+		INSERT INTO l_member(l_id, m_id, m_pw, m_name, m_phone)
+		VALUES(#{l_id}, #{m_id}, #{m_pw}, #{m_name}, #{m_phone}) <!-- EmpVO객체 저장 값 사용 -->
+	</insert>
+	</mapper>
